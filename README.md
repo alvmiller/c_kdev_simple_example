@@ -3,8 +3,6 @@ c_kdev_simple_example
 
 IN PROGRESS...
 
-lkmodule
-
 /*
 
 https://github.com/alvmiller/cpp_helloworld_docker_naive_example
@@ -68,30 +66,30 @@ https://mgalgs.io/2021/03/23/how-to-build-a-custom-linux-kernel-for-qemu-using-d
 
 https://askubuntu.com/questions/1500017/ubuntu-22-04-default-gcc-version-does-not-match-version-that-built-latest-defaul
 
+
+sudo apt-get install \
+     gcc make build-essential libncurses-dev bison flex libssl-dev libelf-dev dwarves \
+     linux-headers-`uname -r`
+chmod +x script.sh
+gcc -o client client.c
+make
+modinfo example_dev.ko
+lsmod | grep example_dev
+sudo insmod ./example_dev.ko
+sudo dmesg
+lsmod | grep example_dev
+sudo ./client
+sudo rmmod example_dev
+lsmod | grep example_dev
+make test
+
+sudo su
+echo Test0 >/dev/example_dev
+cat /dev/example_dev
+
+
+sudo apt install --reinstall gcc-12
+
+sudo apt install libmodule-info-perl
+
 */
-
-// sudo apt-get install \
-//     gcc make build-essential libncurses-dev bison flex libssl-dev libelf-dev dwarves \
-//     linux-headers-`uname -r`
-// chmod +x script.sh
-// gcc -o client client.c
-// make
-// modinfo example_dev.ko
-// lsmod | grep example_dev
-// sudo insmod ./example_dev.ko
-// sudo dmesg
-// lsmod | grep example_dev
-// sudo ./client
-// sudo rmmod example_dev
-// lsmod | grep example_dev
-// make test
-
-// sudo su
-// echo Test0 >/dev/example_dev
-// cat /dev/example_dev
-
-
-
-// sudo apt install --reinstall gcc-12
-
-// sudo apt install libmodule-info-perl
