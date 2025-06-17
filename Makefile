@@ -2,7 +2,7 @@ obj-m := example_dev.o
  
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
- 
+
 all: default
  
 default:
@@ -17,4 +17,4 @@ test:
  
 clean:
 	make -C $(KERNELDIR)  M=$(PWD) clean
-	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions ./client
+	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions ./client ./init *.ko.h
