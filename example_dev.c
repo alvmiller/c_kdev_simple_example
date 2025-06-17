@@ -56,6 +56,7 @@ static ssize_t drv_read(struct file *filp, char __user *buf, size_t len, loff_t 
 	{
 		pr_err("Data Read : Err!\n");
 	}
+
 	pr_info("Data Read : Done!\n");
 	return mem_size;
 }
@@ -67,6 +68,7 @@ static ssize_t drv_write(struct file *filp, const char __user *buf, size_t len, 
 	{
 		pr_err("Data Write : Err!\n");
 	}
+
 	pr_info("Data Write : Done!\n");
 	return len;
 }
@@ -75,36 +77,38 @@ static int __init example_dev_init(void)
 {
 	printk(KERN_ALERT "Init...\n");
 
-	/*Allocating Major number*/
+	//Allocating Major number
 	if((alloc_chrdev_region(&dev, 0, 1, "example_dev_region")) <0){
 		pr_info("Cannot allocate major number\n");
 		return -1;
 	}
 	pr_info("Major = %d Minor = %d \n",MAJOR(dev), MINOR(dev));
 
-	/*Creating cdev structure*/
+	//Creating cdev structure
 	cdev_init(&drv_cdev,&fops);
 
-	/*Adding character device to the system*/
+	//Adding character device to the system
 	if((cdev_add(&drv_cdev,dev,1)) < 0){
 		pr_info("Cannot add the device to the system\n");
 		goto err_class;
 	}
 
-	/*Creating struct class*/
+	//Creating struct class
 	//if(IS_ERR(dev_class = class_create(THIS_MODULE,"example_dev"))){
 	if(IS_ERR(dev_class = class_create("example_dev_class"))){
 		pr_info("Cannot create the struct class\n");
 		goto err_class;
 	}
 
-	/*Creating device*/
+	//Creating device
 	if(IS_ERR(device_create(dev_class,NULL,dev,NULL,"example_dev"))){
 		pr_info("Cannot create the Device 1\n");
 		goto err_device;
 	}
 
-	/*Creating Physical memory*/
+	//Creating Physical memory
+	//uint8_t tmp_buffer[mem_size] = {};
+	//kernel_buffer = tmp_buffer;
 	if((kernel_buffer = kmalloc(mem_size , GFP_KERNEL)) == 0){
 		pr_info("Cannot allocate memory in kernel\n");
 		goto err_device;
@@ -125,11 +129,13 @@ err_class:
 static void __exit example_dev_exit(void)
 {
 	printk(KERN_ALERT "Exit...\n");
+
 	kfree(kernel_buffer);
 	device_destroy(dev_class,dev);
 	class_destroy(dev_class);
 	cdev_del(&drv_cdev);
 	unregister_chrdev_region(dev, 1);
+
 	pr_info("Device Driver Remove...Done!!!\n");
 }
 
