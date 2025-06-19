@@ -5,6 +5,8 @@ IN PROGRESS...
 
 /*
 
+https://www.kernel.org/doc/html/v4.10/process/submit-checklist.html
+
 https://github.com/alvmiller/cpp_helloworld_docker_naive_example
 https://github.com/alvmiller/cpp_client_server_one_docker_example
 https://github.com/alvmiller/cpp_client_server_multi_docker_example
@@ -83,6 +85,8 @@ https://stackoverflow.com/questions/67525731/error-unknown-symbol-copy-to-user-d
 https://slavamoskvin.com/finding-bugs-in-kernel.-part-1-crashing-a-vulnerable-driver-with-syzkaller/
 https://community.intel.com/t5/Nios-V-II-Embedded-Design-Suite/MODPOST-copy-from-user-module-compilation-issue/td-p/73584
 
+https://stackoverflow.com/questions/64931555/how-to-fix-error-passing-argument-4-of-proc-create-from-incompatible-pointer
+
 
 
 
@@ -123,13 +127,19 @@ insmod reverse-shell.ko
 
 
 ******************
-
 https://xcellerator.github.io/posts/docker_escape/
 https://github.com/xcellerator/linux_kernel_hacking/tree/079d97b8e0b25e437ea4d5aa2fa4e85feff67583/3_RootkitTechniques/3.8_privileged_container_escaping
 https://blog.pentesteracademy.com/abusing-sys-module-capability-to-perform-docker-container-breakout-cf5c29956edd
 https://www.reddit.com/r/LiveOverflow/comments/ugbjvf/unable_to_execute_insmod_on_docker_container/
 https://medium.com/@xUr00U/docker-container-breakout-part-1-d364fede4209
 
+sudo apt-get update && \
+sudo apt-get -y install \
+	dkms openssl xxd linux-headers-$(uname -r) \
+	gcc make build-essential libncurses-dev bison flex libssl-dev libelf-dev dwarves kmod \
+	linux-headers-`uname -r`
+
+sudo apt  install docker.io
 
 sudo apt-get install \
      gcc make build-essential libncurses-dev bison flex libssl-dev libelf-dev dwarves \
@@ -169,7 +179,37 @@ sudo systemctl enable docker
 
 sudo docker build . -t example:1
 sudo docker run --rm -it --cap-add SYS_MODULE --privileged example:1
-
 ******************
+
+apt install linux-header-$(uname -r)
+/lib/modules/$(uname -r)/{build,source}
+apt install linux-source-<X>
+sudo apt install linux-source-6.5.0
+cd /usr/src
+sudo tar xf linux-source-6.5.0.tar.bz2
+sudo apt install clang-format
+clang-format -i <src>
+
+sudo apt install --reinstall gcc-12
+sudo ln -s -f /usr/bin/gcc-12 /usr/bin/gcc
+
+https://www.kernel.org/doc/html/v4.10/process/coding-style.html
+https://kworkflow.org/tutorials/codestyle.html
+
+clang-format:
+This tool, part of the LLVM project, can automatically reformat C/C++ code based on a specified style.
+The Linux kernel has a .clang-format file in its root directory that defines the kernel's coding style.
+https://www.kernel.org/doc/html/v4.19/process/clang-format.html
+
+sudo apt -y install kworkflow
+kw codestyle src/
+
+sudo docker run \
+	-v /dev/:/root/dev_ex/ \
+	-it \
+	--privileged --cap-add SYS_MODULE \
+	--hostname docker \
+	--mount "type=bind,src=$PWD,dst=/root" \
+	ubuntu
 
 */
